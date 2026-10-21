@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARPSITE // Command Console</title>
+    <style>
+        body { 
+            background: #02040a; 
+            color: #00ffcc; 
+            font-family: 'Courier New', Courier, monospace; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+            position: relative;
+        }
+        .starfield {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent;
+            z-index: 1;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            animation: warpMove 30s linear infinite;
+        }
+        @keyframes warpMove {
+            from { background-position: 0 0, 40px 60px, 130px 270px; }
+            to { background-position: -550px 550px, -310px 410px, -120px 520px; }
+        }
+        .console { 
+            border: 2px solid #00ffcc; 
+            background: rgba(12, 16, 32, 0.9); 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.25); 
+            width: 450px; 
+            text-align: center; 
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+        h1 { font-size: 1.8rem; text-transform: uppercase; margin: 0 0 5px 0; letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px #00ffcc; }
+        .version { font-size: 0.7rem; color: #ff00ff; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; }
+        input[type="url"] { width: 90%; padding: 10px; background: #02040a; border: 1px solid #00ffcc; color: #fff; margin-bottom: 15px; border-radius: 4px; text-align: center; box-sizing: border-box; }
+        button { background: #00ffcc; color: #070913; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; font-family: inherit; }
+        button:hover { background: #fff; box-shadow: 0 0 10px #fff; }
+        .result { margin-top: 25px; border-top: 1px dashed #00ffcc; padding-top: 15px; display: none; }
+        .output-box { background: #131931; padding: 10px; border: 1px solid #ff00ff; color: #ff00ff; word-break: break-all; margin-top: 10px; font-size: 0.9rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="starfield"></div>
+    <div class="console">
+        <h1>WARPSITE</h1>
+        <div class="version">v1.0.0 // Link Vector Compressor</div>
+        <p>Input target coordinate vectors to establish a secure Warpsite shortcut link.</p>
+        <input type="url" id="targetUrl" placeholder="https://galaxy-destination.com" required>
+        <br>
+        <button id="generateBtn">Generate Warp Coordinates</button>
+        <div class="result" id="resultArea">
+            <p>✨ Warp Shortcut Link Established (Click box to copy):</p>
+            <div class="output-box" id="outputLink"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const urlInput = document.getElementById('targetUrl').value;
+            if (!urlInput) return alert('Please input a valid coordinate system (URL).');
+            try {
+                new URL(urlInput); 
+                const encodedVector = btoa(urlInput);
+                const basePath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                const generatedGatewayUrl = `${basePath}/gate.html?vector=${encodedVector}`;
+                document.getElementById('outputLink').innerText = generatedGatewayUrl;
+                document.getElementById('resultArea').style.display = 'block';
+            } catch (e) {
+                alert('Invalid coordinate trajectory. Make sure it starts with http:// or https://');
+            }
+        });
+        document.getElementById('outputLink').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.innerText);
+            alert('Coordinates synchronized to ship clipboard!');
+        });
+    </script>
+</body>
+</html>
